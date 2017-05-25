@@ -22,7 +22,7 @@
 # limitations under the License.
 
 # Notice:
-# This file is tested on TensorFlow v0.12.0 only.
+# This file is tested on TensorFlow v1.1.0
 
 import numpy as np
 import tensorflow as tf
