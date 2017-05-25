@@ -21,9 +21,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Notice:
-# This file is tested on TensorFlow v0.12.0 only.
-
 import numpy as np
 import tensorflow as tf
 
