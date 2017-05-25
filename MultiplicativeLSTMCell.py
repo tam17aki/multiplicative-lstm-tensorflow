@@ -21,11 +21,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Notice:
+# This file is tested on TensorFlow v0.12.0 only.
+
 import numpy as np
 import tensorflow as tf
 
-from tensorflow.python.ops.rnn_cell import RNNCell
-
+# from tensorflow.python.ops.rnn_cell import RNNCell
+from tensorflow.contrib.rnn.python.ops.core_rnn_cell import RNNCell
 
 # Thanks to 'initializers_enhanced.py' of Project RNN Enhancement:
 # https://github.com/nicolas-ivanov/Seq2Seq_Upgrade_TensorFlow/blob/master/rnn_enhancement/initializers_enhanced.py
@@ -124,12 +127,12 @@ class MultiplicativeLSTMCell(RNNCell):
 
             with tf.variable_scope("Multipli_Weight"):
                 concat = _linear([inputs, h_prev], 2 * self.num_units, True)
-            Wx, Wh = tf.split(1, 2, concat)
+            Wx, Wh = tf.split(concat, 2, 1)
             m = Wx * Wh  # equation (18)
 
             with tf.variable_scope("LSTM_Weight"):
                 lstm_matrix = _linear([inputs, m], 4 * self.num_units, True)
-            i, j, f, o = tf.split(1, 4, lstm_matrix)
+            i, j, f, o = tf.split(lstm_matrix, 4, 1)
 
             # Diagonal connections
             if self.use_peepholes:
@@ -166,7 +169,7 @@ class MultiplicativeLSTMCell(RNNCell):
                     h = tf.clip_by_value(h, -self.proj_clip, self.proj_clip)
 
             new_state = (tf.nn.rnn_cell.LSTMStateTuple(c, h)
-                         if self.state_is_tuple else tf.concat(1, [c, h]))
+                         if self.state_is_tuple else tf.concat([c, h],1))
 
             return h, new_state
 
@@ -209,7 +212,7 @@ def _linear(args, output_size, bias, bias_start=0.0, scope=None):
         if len(args) == 1:
             res = tf.matmul(args[0], matrix)
         else:
-            res = tf.matmul(tf.concat(1, args), matrix)
+            res = tf.matmul(tf.concat(args,1), matrix)
         if not bias:
             return res
         bias_term = tf.get_variable(
