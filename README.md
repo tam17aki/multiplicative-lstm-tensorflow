@@ -1,6 +1,8 @@
 # multiplicative-lstm-tensorflow
 An implementation of multiplicative LSTM in TensorFlow
 
+Tested on TensorFlow v1.1.0
+
 #### Example usage:
 ```
 import tensorflow as tf
